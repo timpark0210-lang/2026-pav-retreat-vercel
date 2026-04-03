@@ -1,0 +1,15 @@
+# Google Apps Script (clasp) ignore
+.clasp.json
+# (Optionally ignore .clasp.json if you want to keep scriptId private, 
+# but for backup it's usually included. If you have multiple environments, ignore it.)
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
