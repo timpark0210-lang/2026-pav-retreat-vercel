@@ -44,22 +44,15 @@ export default function Navbar() {
 
         {/* Action Icons */}
         <div className="flex items-center gap-4">
-          <button className="p-2 text-slate-400 hover:text-primary transition-colors">
-            <Search size={20} />
-          </button>
-          <button className="p-2 text-slate-400 hover:text-primary transition-colors relative">
+          <Link href="/attendance" className="p-2 text-slate-400 hover:text-primary transition-colors relative">
             <Bell size={20} />
-            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-          </button>
-          
-          <div className="h-6 w-px bg-slate-200 mx-2" />
-          
-          <button className="bg-primary/10 p-2 rounded-full text-primary hover:bg-primary hover:text-white transition-all">
-            <User size={20} />
-          </button>
+            <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-primary rounded-full ring-2 ring-white"></span>
+          </Link>
           
           <Link href="/register" className="hidden sm:block ml-2">
-            <button className="btn-primary py-2 px-6 text-sm">Register</button>
+            <button className="bg-primary hover:bg-primary/90 text-white rounded-full px-6 py-2.5 text-sm font-bold shadow-lg shadow-primary/20 transition-all active:scale-95">
+              Register
+            </button>
           </Link>
         </div>
       </div>

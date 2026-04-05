@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Users, UserCheck, AlertCircle, CircleDashed, Lock, Save, Edit3, X } from "lucide-react";
-import { updateAttendanceAction } from "@/app/actions/attendance";
+import { updateAttendanceAction, addStudentAction, deleteStudentAction } from "@/app/actions/attendance";
 
 interface Student {
   name: string;
@@ -26,7 +26,10 @@ export default function AttendanceClient({ initialGrouped }: AttendanceClientPro
   const [password, setPassword] = useState("");
   const [showLogin, setShowLogin] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [dirtyStudents, setDirtyStudents] = useState<Record<string, string>>({}); // name_group: attendance
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newStudent, setNewStudent] = useState({ name: "", group: "7B" });
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,8 +48,8 @@ export default function AttendanceClient({ initialGrouped }: AttendanceClientPro
 
     setGrouped(prev => {
       const next = { ...prev };
-      const group = { ...next[className] };
-      const students = [...group.students];
+      const groupData = { ...next[className] };
+      const students = [...groupData.students];
       const studentIdx = students.findIndex(s => s.name === studentName);
 
       if (studentIdx !== -1) {
@@ -56,39 +59,77 @@ export default function AttendanceClient({ initialGrouped }: AttendanceClientPro
           "참가": "불참",
           "불참": "미정"
         };
-        students[studentIdx] = { ...students[studentIdx], attendance: statusMap[current] || "참가" };
-        group.students = students;
-        next[className] = group;
+        const nextStatus = statusMap[current] || "참가";
+        students[studentIdx] = { ...students[studentIdx], attendance: nextStatus };
+        groupData.students = students;
+        next[className] = groupData;
+
+        // Track dirty state
+        setDirtyStudents(d => ({ ...d, [`${studentName}_${className}`]: nextStatus }));
       }
       return next;
     });
   };
 
+  const handleAddStudent = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newStudent.name || !newStudent.group) return;
+    setIsSaving(true);
+    const result = await addStudentAction({ ...newStudent, attendance: "미정" });
+    if (result.success) {
+      window.location.reload(); // Simple reload for fresh SSR data
+    } else {
+      setMessage({ type: "error", text: result.error || "Failed to add student" });
+      setIsSaving(false);
+    }
+  };
+
+  const handleDeleteStudent = async (className: string, studentName: string) => {
+    if (!confirm(`Delete ${studentName}?`)) return;
+    setIsSaving(true);
+    const result = await deleteStudentAction(className, studentName);
+    if (result.success) {
+      window.location.reload();
+    } else {
+      setMessage({ type: "error", text: result.error || "Failed to delete student" });
+      setIsSaving(false);
+    }
+  };
+
   const handleSave = async () => {
     setIsSaving(true);
-    setMessage({ type: "success", text: "Saving to server..." });
+    setMessage({ type: "success", text: "Saving changes..." });
 
-    const allUpdates = Object.values(grouped).flatMap(g => 
-      g.students.map(s => ({ group: s.group, name: s.name, attendance: s.attendance }))
-    );
+    const updates = Object.entries(dirtyStudents).map(([key, attendance]) => {
+      const [name, ...groupParts] = key.split("_");
+      return { name, group: groupParts.join("_"), attendance };
+    });
 
-    const result = await updateAttendanceAction(allUpdates);
+    if (updates.length === 0) {
+      setIsEditMode(false);
+      setIsSaving(false);
+      return;
+    }
+
+    const result = await updateAttendanceAction(updates);
 
     if (result.success) {
-      setMessage({ type: "success", text: "All changes saved successfully!" });
+      setMessage({ type: "success", text: "Saved successfully!" });
+      setDirtyStudents({});
       setIsEditMode(false);
       setTimeout(() => setMessage(null), 3000);
     } else {
-      setMessage({ type: "error", text: `Error: ${result.error}` });
+      setMessage({ type: "error", text: result.error || "Error saving" });
     }
     setIsSaving(false);
   };
 
-  const totalStudents = Object.values(grouped).reduce((acc, g) => acc + g.students.length, 0);
-  const attendingStudents = Object.values(grouped).reduce((acc, g) => 
-    acc + g.students.filter(s => s.attendance === "참가").length, 0
-  );
-  const attendanceRate = totalStudents > 0 ? Math.round((attendingStudents / totalStudents) * 100) : 0;
+  const studentsList = Object.values(grouped).flatMap(g => g.students);
+  const total = studentsList.length;
+  const attending = studentsList.filter(s => s.attendance === "참가").length;
+  const absent = studentsList.filter(s => s.attendance === "불참").length;
+  const undecided = total - attending - absent;
+  const attendanceRate = total > 0 ? Math.round((attending / total) * 100) : 0;
 
   return (
     <div className="space-y-20">
@@ -134,19 +175,29 @@ export default function AttendanceClient({ initialGrouped }: AttendanceClientPro
             </div>
 
             {/* Stats Row */}
-            <div className="flex items-center gap-12 bg-white p-8 rounded-[2rem] shadow-sm">
+            <div className="flex items-center gap-10 bg-white px-8 py-6 rounded-[2rem] shadow-sm border border-slate-50">
                <div className="flex flex-col items-center">
                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Total</span>
-                 <span className="text-3xl font-display font-black text-slate-800">{totalStudents}</span>
+                 <span className="text-3xl font-display font-black text-slate-800">{total}</span>
                </div>
-               <div className="w-px h-10 bg-slate-100" />
+               <div className="w-px h-8 bg-slate-100" />
                <div className="flex flex-col items-center">
-                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Attending</span>
-                 <span className="text-3xl font-display font-black text-green-500">{attendingStudents}</span>
+                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">참가</span>
+                 <span className="text-3xl font-display font-black text-green-500">{attending}</span>
                </div>
-               <div className="w-px h-10 bg-slate-100" />
+               <div className="w-px h-8 bg-slate-100" />
                <div className="flex flex-col items-center">
-                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Att. Rate</span>
+                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">불참</span>
+                 <span className="text-3xl font-display font-black text-red-400">{absent}</span>
+               </div>
+               <div className="w-px h-8 bg-slate-100" />
+               <div className="flex flex-col items-center">
+                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">미정</span>
+                 <span className="text-3xl font-display font-black text-slate-300">{undecided}</span>
+               </div>
+               <div className="w-px h-8 bg-primary/10" />
+               <div className="flex flex-col items-center">
+                 <span className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Rate</span>
                  <span className="text-3xl font-display font-black text-primary">
                    {attendanceRate}%
                  </span>
@@ -186,9 +237,19 @@ export default function AttendanceClient({ initialGrouped }: AttendanceClientPro
                     <div 
                       key={idx} 
                       onClick={() => toggleAttendance(className, student.name)}
-                      className={`flex items-center justify-between p-3 rounded-2xl transition-all border ${isEditMode ? 'cursor-pointer hover:border-primary/30 bg-primary/[0.02]' : 'bg-surface hover:bg-white border-transparent hover:border-slate-100'}`}
+                      className={`flex items-center justify-between p-3 rounded-2xl transition-all border group/row ${isEditMode ? 'cursor-pointer hover:border-primary/30 bg-primary/[0.02]' : 'bg-surface hover:bg-white border-transparent hover:border-slate-100'}`}
                     >
-                       <span className="font-bold text-slate-700 tracking-tight">{student?.name || "Unknown"}</span>
+                       <div className="flex items-center gap-3">
+                         {isEditMode && (
+                           <button 
+                             onClick={(e) => { e.stopPropagation(); handleDeleteStudent(className, student.name); }}
+                             className="text-red-300 hover:text-red-500 transition-colors p-1"
+                           >
+                             <X size={14} />
+                           </button>
+                         )}
+                         <span className="font-bold text-slate-700 tracking-tight">{student?.name || "Unknown"}</span>
+                       </div>
                        <div className="pointer-events-none">
                           {student?.attendance === "참가" ? (
                             <div className="badge badge-success gap-1">
@@ -206,6 +267,14 @@ export default function AttendanceClient({ initialGrouped }: AttendanceClientPro
                        </div>
                     </div>
                   ))}
+                  {isEditMode && (
+                    <button 
+                      onClick={() => { setShowAddModal(true); setNewStudent({ ...newStudent, group: className }); }}
+                      className="w-full py-2 border-2 border-dashed border-slate-100 rounded-2xl text-[10px] font-bold uppercase tracking-widest text-slate-300 hover:border-primary/20 hover:text-primary transition-all"
+                    >
+                      + Add Student
+                    </button>
+                  )}
                 </div>
 
                 <div className="mt-8 pt-6 border-t border-slate-50 flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase tracking-widest">
@@ -247,6 +316,40 @@ export default function AttendanceClient({ initialGrouped }: AttendanceClientPro
               </button>
               <button type="button" onClick={() => setShowLogin(false)} className="w-full text-slate-400 text-[10px] font-bold uppercase tracking-widest hover:text-slate-600 transition-colors">
                 Back to View
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Add Student Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[100] flex items-center justify-center p-6 bg-animate-in fade-in">
+          <div className="bg-white p-12 rounded-[3rem] shadow-2xl max-w-md w-full space-y-8 animate-in zoom-in-95 duration-300">
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 bg-primary/10 rounded-3xl flex items-center justify-center text-primary mx-auto">
+                <Users size={32} />
+              </div>
+              <h2 className="text-3xl font-display font-black tracking-tighter">Add Student</h2>
+              <p className="text-slate-400 text-sm font-bold uppercase tracking-widest">
+                New member for {newStudent.group}
+              </p>
+            </div>
+
+            <form onSubmit={handleAddStudent} className="space-y-4">
+              <input 
+                autoFocus
+                type="text" 
+                placeholder="Student Name"
+                value={newStudent.name}
+                onChange={(e) => setNewStudent({ ...newStudent, name: e.target.value })}
+                className="w-full px-6 py-4 rounded-2xl bg-surface border-2 border-transparent focus:border-primary/20 focus:bg-white outline-none transition-all font-bold"
+              />
+              <button type="submit" disabled={isSaving} className="w-full btn btn-primary py-5 rounded-2xl shadow-xl shadow-primary/20 font-black tracking-widest uppercase">
+                {isSaving ? "Processing..." : "Add to List"}
+              </button>
+              <button type="button" onClick={() => setShowAddModal(false)} className="w-full text-slate-400 text-[10px] font-bold uppercase tracking-widest hover:text-slate-600 transition-colors">
+                Cancel
               </button>
             </form>
           </div>

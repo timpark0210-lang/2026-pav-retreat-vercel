@@ -2,7 +2,10 @@
 
 ## 1. Core Identity & Strategy
 - **Project**: PAV 2026 Retreat Web App (2026-pav-retreat-vercel)
-- **Design Concept**: **"The Ethereal Archive (The Weightless Word)"**
+- **Theme**: **"WATCH & FOLLOW"** (그들이 주를 보며 배우고 따라가는 수련회)
+- **Design Concept**: **"The Celestial Vista (The Weightless Word)"**
+- **Date**: 2026-04-17 ~ 04-19
+- **Location**: Moirs Point Christian Centre, Mangawhai
 - **Creative North Star**: A weightless, digital sanctuary. No lines, only light and tonal shifts.
 - **Tone**: Professional, editorial, and spiritual.
 
@@ -40,10 +43,14 @@
 
 ---
 
-## 4. Google Sheets Configuration
-- **Spreadsheet ID**: `1KJkz7kP5mH_51v7tlwnseu2RS3TDbqxQCW6gj8eML_I`
-- **Sheet Name**: `시트1` (Default)
-- **Range**: `A:H` (Name, Division, Role, etc.)
+## 4. Project Identity
+- **Project Name**: 2026-pav-retreat-vercel
+- **Production URL**: [https://2026-pav-retreat-vercel.vercel.app/](https://2026-pav-retreat-vercel.vercel.app/)
+- **Google Sheet ID**: `1KJkz7kP5mH_51v7tlwnseu2RS3TDbqxQCW6gj8eML_I`
+- **Primary Sheets**: 
+    - `Attendance`: [Class, Name, Status] - Real-time registration.
+    - `Notice`: [ID, Content, Author, Time] - Announcements.
+- **DB Pipeline**: **"Fetch-Compare-Apply"** (Bulk Merge/Merge Logic) to prevent data overwrite.
 
 ---
 

@@ -34,7 +34,7 @@ export default async function HomePage() {
         <div className="hero-card flex flex-col md:flex-row items-center justify-between gap-12 group">
           <div className="flex-1 space-y-8 z-10">
             <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full text-white/90 text-sm font-bold animate-pulse">
-              <Calendar size={16} /> 2026-04-03 ~ 04-05
+              <Calendar size={16} /> 2026-04-17 ~ 04-19
             </div>
             <h1 className="text-5xl md:text-8xl font-display font-black tracking-tighter leading-none mb-6">
               WATCH <br />
@@ -58,10 +58,13 @@ export default async function HomePage() {
           
           <div className="flex-1 relative aspect-square md:aspect-auto md:h-[600px] w-full max-w-lg rounded-[2rem] overflow-hidden shadow-2xl rotate-2 group-hover:rotate-0 transition-transform duration-700">
              <div className="absolute inset-0 bg-primary/20 mix-blend-overlay z-10" />
-             {/* Placeholder for Hero Poster */}
-             <div className="w-full h-full bg-slate-200 animate-pulse flex items-center justify-center text-slate-400">
-               <span className="font-display font-black text-4xl opacity-20">POSTER 2026</span>
-             </div>
+             <Image 
+               src="/pav_2026_retreat_poster_1775388297277.png"
+               alt="Watch & Follow 2026"
+               fill
+               className="object-cover group-hover:scale-105 transition-transform duration-1000"
+               priority
+             />
           </div>
 
           {/* Background Decorative Element */}
@@ -135,10 +138,10 @@ export default async function HomePage() {
          <h2 className="text-4xl font-black tracking-tighter">MINISTRY TEAM</h2>
          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
-              { name: "양진우", role: "Main Speaker" },
-              { name: "유주형", role: "Manager" },
-              { name: "이수연", role: "Praise Leader" },
-              { name: "한은종", role: "Media Support" },
+              { name: "유명종", role: "Main Speaker (Fri)" },
+              { name: "조준목", role: "Main Speaker (Sat)" },
+              { name: "양진우", role: "Main Speaker (Sun)" },
+              { name: "박성광", role: "Planning Lead" },
             ].map((staff, i) => (
               <div key={i} className="staff-card group">
                 <div className="w-24 h-24 bg-slate-100 rounded-full mb-6 relative overflow-hidden group-hover:scale-110 transition-transform">
