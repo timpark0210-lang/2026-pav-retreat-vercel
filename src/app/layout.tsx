@@ -1,27 +1,43 @@
-import type { Metadata } from "next";
-import { Inter, Noto_Sans_KR } from "next/font/google";
-import "./globals.css";
+import type { Metadata, Viewport } from "next";
+import { Plus_Jakarta_Sans, Noto_Serif_KR, Manrope } from "next/font/google";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import "@/app/globals.css";
 
-const interIndices = Inter({
-  variable: "--font-inter",
+const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
+  variable: "--font-plus-jakarta",
+  display: "swap",
 });
 
-const notoIndices = Noto_Sans_KR({
-  variable: "--font-noto",
+const notoSerif = Noto_Serif_KR({
+  weight: ["400", "700"],
   subsets: ["latin"],
-  weight: ["400", "500", "700"],
+  variable: "--font-noto-serif",
+  display: "swap",
+});
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-manrope",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
   title: "2026 PAV Retreat: Watch & Follow",
-  description: "2026 PAV Youth Retreat Registration Portal",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0",
+  description: "2026 PAV Youth Retreat Registration Portal - Ethereal Archive",
   appleWebApp: {
     title: "PAV 2026",
     capable: true,
     statusBarStyle: "black-translucent",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
@@ -30,9 +46,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className={`${interIndices.variable} ${notoIndices.variable}`}>
-      <body className="antialiased font-sans text-slate-900 bg-surface">
-        {children}
+    <html lang="ko" className={`${plusJakarta.variable} ${notoSerif.variable} ${manrope.variable} antialiased`}>
+      <body className="font-sans text-slate-900 bg-[#f5f7f9] min-h-screen">
+        <Navbar />
+        <main className="pt-20">
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   );

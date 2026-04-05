@@ -14,14 +14,20 @@ export function getOAuth2Client() {
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
   const refreshToken = process.env.GOOGLE_REFRESH_TOKEN;
 
+  // SYSTEMATIC DEBUGGING (S-71): Instrumentation for Vercel Runtime
+  console.log("[DEBUG] getOAuth2Client Initialization Attempt");
+  console.log(`[DEBUG] CLIENT_ID: ${clientId ? "PRESENT (" + clientId.substring(0, 5) + "...)" : "MISSING"}`);
+  console.log(`[DEBUG] CLIENT_SECRET: ${clientSecret ? "PRESENT (" + clientSecret.substring(0, 3) + "...)" : "MISSING"}`);
+  console.log(`[DEBUG] REFRESH_TOKEN: ${refreshToken ? "PRESENT (len:" + refreshToken.length + ")" : "MISSING"}`);
+
   if (!clientId || !clientSecret || !refreshToken) {
+    console.error("[CRITICAL] Missing Google OAuth2 credentials in Vercel Runtime.");
     throw new Error(
       "Missing Google OAuth2 credentials in environment variables."
     );
   }
 
   // Initialize OAuth2 client
-  // For Vercel Serverless, we use the credentials provided in .env
   oauth2Client = new google.auth.OAuth2(clientId, clientSecret);
   oauth2Client.setCredentials({ refresh_token: refreshToken });
 
@@ -49,8 +55,13 @@ export async function getSheetValues(range: string) {
       range,
     });
     return response.data.values || [];
-  } catch (error) {
-    console.error(`Error fetching sheet values for range ${range}:`, error);
+  } catch (error: any) {
+    console.error(`[CRITICAL] Error fetching sheet values for range ${range}`);
+    console.error(`[DEBUG] Error Status: ${error.status || error.code}`);
+    console.error(`[DEBUG] Error Message: ${error.message}`);
+    if (error.response?.data) {
+      console.error("[DEBUG] Full Error Data:", JSON.stringify(error.response.data));
+    }
     throw error;
   }
 }
