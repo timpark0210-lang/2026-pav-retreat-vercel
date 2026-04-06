@@ -143,32 +143,31 @@ export default async function HomePage() {
            {mainData?.section_staff_title || "Key Staff"}
          </h2>
          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-            {[
-              { name: "유명종 목사님", role: "담임목사", key: "유명종" },
-              { name: "조준목 목사님", role: "교육목사", key: "조준목" },
-              { name: "양진우 전도사님", role: "청소년부 담당", key: "양진우" },
-              { name: "부장/회계", role: "서준호 & 이진희 선생님", key: "부장회계" },
-            ].map((staff, i) => {
-              const staffImgId = mainData?.[`staff_img_${staff.key}`];
-              const staffImgUrl = getGoogleDriveUrl(staffImgId);
+            {[1, 2, 3, 4].map((i) => {
+              const name = mainData?.[`staff_${i}_name`];
+              const role = mainData?.[`staff_${i}_role`];
+              const imgId = mainData?.[`staff_${i}_img`];
+              const imgUrl = getGoogleDriveUrl(imgId);
+
+              if (!name) return null;
 
               return (
                 <div key={i} className="staff-card group border border-slate-50 hover:bg-white transition-colors">
                   <div className="w-20 h-20 md:w-24 md:h-24 bg-slate-100 rounded-full mb-6 relative overflow-hidden group-hover:scale-110 shadow-inner">
-                     {staffImgUrl ? (
-                        <Image src={staffImgUrl} alt={staff.name} fill className="object-cover" />
+                     {imgUrl ? (
+                        <Image src={imgUrl} alt={name} fill className="object-cover" />
                      ) : (
                         <div className="absolute inset-0 bg-primary/5 flex items-center justify-center text-primary/20">
                            <Users size={32} />
                         </div>
                      )}
                   </div>
-                  <h4 className="text-lg font-black text-slate-800 tracking-tight leading-none">{staff.name}</h4>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">{staff.role}</p>
+                  <h4 className="text-lg font-black text-slate-800 tracking-tight leading-none">{name}</h4>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">{role}</p>
                 </div>
               );
             })}
-         </div>
+          </div>
       </section>
 
       {/* 5. List-style Announcements */}

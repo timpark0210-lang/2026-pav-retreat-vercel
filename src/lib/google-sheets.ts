@@ -133,7 +133,20 @@ export async function getMainData() {
     section_notice_title: "공지사항",
     section_staff_title: "섬기는 분들",
     btn_action_label: "일정 확인하기",
-    btn_action_link: "/schedule"
+    btn_action_link: "/schedule",
+    // Ministry Team Defaults
+    staff_1_name: "조준목 목사님",
+    staff_1_role: "교육목사",
+    staff_1_img: "1hU2e_6uV0l7O6t8x_hW3i_tT4e_5s6R7", // Placeholder or existing ID if known
+    staff_2_name: "유명종 목사님",
+    staff_2_role: "담임목사",
+    staff_2_img: "",
+    staff_3_name: "양진우 전도사님",
+    staff_3_role: "청소년부 담당",
+    staff_3_img: "",
+    staff_4_name: "부장/회계",
+    staff_4_role: "서준호 & 이진희 선생님",
+    staff_4_img: "",
   };
 
   try {
