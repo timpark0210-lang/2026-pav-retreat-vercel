@@ -117,7 +117,7 @@ export async function appendSheetValues(range: string, values: any[][]) {
  */
 export async function getMainData() {
   try {
-    const rows = await getSheetValues("MainData!A2:B20");
+    const rows = await getSheetValues("MainData!A2:B100");
     const data: Record<string, string> = {};
     rows.forEach(row => {
       if (row[0] && row[1]) {

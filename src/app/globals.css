@@ -70,12 +70,20 @@
     @apply text-primary after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-full after:h-0.5 after:bg-primary after:rounded-full;
   }
 
-  .hero-card {
-    @apply bg-linear-to-br from-primary to-primary-container text-white p-12 md:p-20 rounded-[2.5rem] relative overflow-hidden;
+  .hero-backdrop {
+    @apply relative h-[60vh] min-h-[400px] w-full flex items-center justify-center text-center overflow-hidden;
   }
   
   .staff-card {
-    @apply bg-surface-lowest rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:shadow-xl;
+    @apply bg-surface-lowest rounded-3xl p-8 flex flex-col items-center text-center transition-all hover:shadow-2xl hover:-translate-y-1;
+  }
+
+  .list-notice-card {
+    @apply bg-white p-6 rounded-3xl flex items-start gap-6 transition-all hover:shadow-lg border border-slate-50;
+  }
+
+  .core-message-box {
+    @apply bg-white/50 backdrop-blur-xl border border-white/40 p-12 rounded-[2.5rem] shadow-sm;
   }
 }
 
