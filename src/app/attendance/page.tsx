@@ -21,15 +21,8 @@ export default async function AttendancePage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-20">
+    <div className="max-w-7xl mx-auto px-6 py-20 pb-32">
       <AttendanceClient initialGrouped={grouped} />
-      
-      {/* Footer Disclaimer */}
-      <section className="bg-surface-lowest p-12 rounded-[2.5rem] border-2 border-primary/5 text-center mt-20">
-         <p className="text-2xl font-serif text-slate-500 leading-relaxed max-w-3xl mx-auto">
-            "실시간 명단 공유를 통해 서로의 필요를 <br/> 함께 기도로 채워가는 공동체가 됩시다."
-         </p>
-      </section>
     </div>
   );
 }

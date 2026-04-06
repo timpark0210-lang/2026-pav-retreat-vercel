@@ -1,32 +1,34 @@
 @import "tailwindcss";
 
 @theme {
-  --font-display: var(--font-plus-jakarta), ui-sans-serif, system-ui;
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui;
   --font-serif: var(--font-noto-serif), ui-serif, Georgia;
-  --font-mono: var(--font-manrope), ui-monospace, SFMono-Regular;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui;
+  --font-mono: var(--font-geist), ui-monospace, SFMono-Regular;
 
-  --color-surface: #f5f7f9;
-  --color-surface-low: #eef1f3;
+  --color-surface: #f8f9fb;
+  --color-surface-low: #f1f3f6;
   --color-surface-lowest: #ffffff;
-  --color-primary: #005ea0;
-  --color-primary-container: #46a5ff;
-  --color-accent: #0099ff;
-  --color-on-surface: #2c2f31;
+  --color-primary: #004e92;
+  --color-primary-container: #006fb9;
+  --color-accent: #00a8ff;
+  --color-on-surface: #1a1c1e;
   --color-on-primary: #ffffff;
 
   --radius-xl: 1.5rem;
   --radius-2xl: 2rem;
+  --radius-3xl: 3rem;
 }
 
 @layer base {
   body {
     @apply bg-surface text-on-surface selection:bg-primary/20 selection:text-primary;
-    font-family: var(--font-plus-jakarta);
+    font-family: var(--font-geist);
   }
 
   h1, h2, h3, h4 {
-    font-family: var(--font-plus-jakarta);
-    @apply font-bold tracking-tight;
+    font-family: var(--font-space-grotesk);
+    @apply font-black tracking-tight;
   }
 
   .font-serif {
@@ -34,7 +36,7 @@
   }
 
   .font-mono {
-    font-family: var(--font-manrope);
+    font-family: var(--font-geist);
   }
 }
 
@@ -96,7 +98,7 @@
   }
   .logo-text {
     @apply font-display font-black text-lg md:text-xl tracking-tighter text-on-surface leading-none;
-    font-family: var(--font-plus-jakarta);
+    font-family: var(--font-space-grotesk);
   }
 }
 

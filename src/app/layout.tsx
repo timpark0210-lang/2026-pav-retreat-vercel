@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans, Noto_Serif_KR, Manrope } from "next/font/google";
+import { Space_Grotesk, Noto_Serif_KR, Geist } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
 import BottomNav from "@/components/layout/BottomNav";
 import Footer from "@/components/layout/Footer";
@@ -8,9 +8,9 @@ import "@/app/globals.css";
 
 export const revalidate = 60; // Auto-sync spreadsheet changes every 60 seconds
 
-const plusJakarta = Plus_Jakarta_Sans({
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  variable: "--font-plus-jakarta",
+  variable: "--font-space-grotesk",
   display: "swap",
 });
 
@@ -21,9 +21,9 @@ const notoSerif = Noto_Serif_KR({
   display: "swap",
 });
 
-const manrope = Manrope({
+const geist = Geist({
   subsets: ["latin"],
-  variable: "--font-manrope",
+  variable: "--font-geist",
   display: "swap",
 });
 
@@ -73,8 +73,15 @@ export default async function RootLayout({
   const appTitle = mainData?.app_title;
 
   return (
-    <html lang="ko" className={`${plusJakarta.variable} ${notoSerif.variable} ${manrope.variable} antialiased`}>
-      <body className="font-sans text-slate-900 bg-[#f5f7f9] min-h-screen">
+    <html lang="ko" className={`${spaceGrotesk.variable} ${notoSerif.variable} ${geist.variable} antialiased`}>
+      <body className="font-geist text-slate-900 bg-[#f8f9fb] min-h-screen relative overflow-x-hidden selection:bg-primary/10 selection:text-primary">
+        {/* Premium Grain Texture Overlay */}
+        <div className="fixed inset-0 pointer-events-none z-[9999] opacity-[0.03] mix-blend-multiply bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+        
+        {/* Subtle Glow Backgrounds */}
+        <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
+        <div className="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-blue-400/5 blur-[120px] pointer-events-none" />
+
         <Navbar logoUrl={logoUrl} appTitle={appTitle} />
         <main className="pt-20 pb-24 md:pb-0">
           {children}
