@@ -135,22 +135,38 @@ export default async function HomePage() {
       {/* Ministry Team Section */}
       <section className="px-6 max-w-7xl mx-auto w-full space-y-12">
          <h2 className="text-4xl font-black tracking-tighter">MINISTRY TEAM</h2>
-         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12">
             {[
-              { name: "유명종", role: "Main Speaker (Fri)" },
               { name: "조준목", role: "Main Speaker (Sat)" },
+              { name: "유명종", role: "Main Speaker (Fri)" },
               { name: "양진우", role: "Main Speaker (Sun)" },
-              { name: "박성광", role: "Planning Lead" },
-            ].map((staff, i) => (
-              <div key={i} className="staff-card group">
-                <div className="w-24 h-24 bg-slate-100 rounded-full mb-6 relative overflow-hidden group-hover:scale-110 transition-transform">
-                   {/* Placeholder for Staff Photo */}
-                   <div className="absolute inset-0 bg-primary/5 flex items-center justify-center text-primary/20 font-black text-2xl">PAV</div>
+            ].map((staff, i) => {
+              const staffImgId = mainData?.[`staff_img_${staff.name}`];
+              const staffImgUrl = getGoogleDriveUrl(staffImgId);
+
+              return (
+                <div key={i} className="staff-card group flex flex-col items-center">
+                  <div className="w-32 h-32 bg-slate-100 rounded-full mb-8 relative overflow-hidden group-hover:scale-110 shadow-lg border-4 border-white transition-all">
+                     {staffImgUrl ? (
+                        <Image 
+                          src={staffImgUrl}
+                          alt={staff.name}
+                          fill
+                          className="object-cover"
+                        />
+                     ) : (
+                        <div className="absolute inset-0 bg-primary/5 flex items-center justify-center text-primary/20 font-black text-3xl italic">
+                          PAV
+                        </div>
+                     )}
+                  </div>
+                  <h4 className="text-2xl font-black tracking-tight">{staff.name}</h4>
+                  <p className="text-[10px] font-bold text-primary tracking-[0.2em] uppercase mt-2 opacity-60">
+                    {staff.role}
+                  </p>
                 </div>
-                <h4 className="text-lg font-black">{staff.name}</h4>
-                <p className="text-xs font-bold text-primary tracking-widest uppercase mt-1">{staff.role}</p>
-              </div>
-            ))}
+              );
+            })}
          </div>
       </section>
     </div>

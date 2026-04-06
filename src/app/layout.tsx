@@ -58,7 +58,6 @@ export default async function RootLayout({
         <main className="pt-20">
           {children}
         </main>
-        <Footer />
       </body>
     </html>
   );
