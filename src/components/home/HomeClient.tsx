@@ -118,10 +118,10 @@ export default function HomeClient({ notices, mainData, heroUrl }: HomeClientPro
              <div className="relative z-10 h-full flex flex-col justify-between gap-20">
                 <div className="space-y-4">
                   <span className="text-primary font-black text-[10px] tracking-widest uppercase">Timing</span>
-                  <h3 className="text-5xl font-display font-black text-slate-900 tracking-tighter">
+                  <h3 className="text-3xl md:text-4xl font-display font-black text-slate-900 tracking-tighter">
                     {mainData?.info_date_value || "2026.04.17 - 19"}
                   </h3>
-                  <p className="text-slate-400 font-serif italic text-lg">{mainData?.info_date_sub || "3일간의 믿음의 여정"}</p>
+                  <p className="text-slate-400 font-serif italic text-base">{mainData?.info_date_sub || "3일간의 믿음의 여정"}</p>
                 </div>
                 <div className="flex items-center gap-2 text-primary font-black text-xs uppercase tracking-widest">
                   View Full Schedule <ArrowRight size={16} className="group-hover:translate-x-2 transition-transform" />
@@ -170,7 +170,7 @@ export default function HomeClient({ notices, mainData, heroUrl }: HomeClientPro
           
           <motion.div variants={item} className="lg:col-span-7">
             <blockquote className="space-y-10 group">
-              <p className="text-4xl md:text-6xl font-display font-black text-slate-800 leading-[1.1] tracking-tighter uppercase group-hover:text-primary transition-colors duration-700">
+              <p className="text-3xl md:text-5xl font-display font-black text-slate-800 leading-[1.1] tracking-tighter uppercase group-hover:text-primary transition-colors duration-700">
                 "{mainData?.core_message_quote || "예수님께서 가신 길을 바라보고(Watch), 따라가는(Follow) PAV 청소년"}"
               </p>
             </blockquote>
@@ -246,20 +246,20 @@ export default function HomeClient({ notices, mainData, heroUrl }: HomeClientPro
                   key={i} 
                   variants={item}
                   whileHover={{ y: -10 }}
-                  className="flex flex-col items-start gap-6 group"
+                  className="flex flex-col items-center text-center gap-4 group"
                 >
-                  <div className="w-full aspect-square bg-slate-100 rounded-[2.5rem] relative overflow-hidden shadow-inner">
+                  <div className="w-24 h-24 md:w-32 md:h-32 bg-slate-100 rounded-full relative overflow-hidden shadow-inner">
                      {imgId ? (
                         <Image src={`https://lh3.googleusercontent.com/d/${imgId}`} alt={name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
                      ) : (
                         <div className="absolute inset-0 bg-primary/5 flex items-center justify-center text-primary/10">
-                           <Users size={80} strokeWidth={1} />
+                           <Users size={32} strokeWidth={1} />
                         </div>
                      )}
                   </div>
                   <div className="space-y-1">
-                    <h4 className="text-2xl font-display font-black text-slate-900 tracking-tighter">{name}</h4>
-                    <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">{role}</p>
+                    <h4 className="text-xl font-display font-black text-slate-900 tracking-tighter">{name}</h4>
+                    <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em]">{role}</p>
                   </div>
                 </motion.div>
               );

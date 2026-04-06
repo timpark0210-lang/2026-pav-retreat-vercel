@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Clock, MapPin, User, Bookmark, MousePointer2 } from "lucide-react";
-import { motion, useScroll, useSpring } from "framer-motion";
+import { Clock, MapPin, User, Bookmark, MousePointer2, Calendar, LayoutList } from "lucide-react";
+import { motion, useScroll, useSpring, AnimatePresence } from "framer-motion";
 
 interface ScheduleItem {
   time: string;
@@ -21,6 +21,8 @@ interface ScheduleData {
 }
 
 export default function ScheduleClient({ initialData }: { initialData: ScheduleData }) {
+  const [viewMode, setViewMode] = useState<"detailed" | "timeline">("detailed");
+  const [activeDay, setActiveDay] = useState<number>(1);
   const [currentTime, setCurrentTime] = useState(new Date());
   const containerRef = useRef<HTMLDivElement>(null);
   
@@ -61,41 +63,15 @@ export default function ScheduleClient({ initialData }: { initialData: ScheduleD
     }
   };
 
-  const DaySection = ({ dayIdx, items, date, theme }: { dayIdx: number, items: ScheduleItem[], date: string, theme: string }) => (
-    <section className="relative space-y-8">
-      {/* Sticky Day Header */}
-      <div className="sticky top-20 z-30 py-4 -mx-6 px-6 bg-surface/80 backdrop-blur-xl border-b border-slate-100 flex items-end justify-between">
-        <div className="space-y-1">
-          <div className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">Day {dayIdx}</div>
-          <h2 className="text-3xl font-display font-black tracking-tighter uppercase">{date}</h2>
-        </div>
-        <div className="text-right pb-1">
-          <p className="text-slate-400 font-serif italic text-sm">{theme}</p>
-        </div>
-      </div>
-
-      <div className="space-y-6">
-        {items.length > 0 ? (
-          items.map((item, i) => (
-            <DetailedItem key={i} item={item} dayIdx={dayIdx} />
-          ))
-        ) : (
-          <div className="text-center py-20 bg-white/50 rounded-[3rem] border border-dashed border-slate-200">
-            <p className="text-slate-400 italic">No schedule data available for this day.</p>
-          </div>
-        )}
-      </div>
-    </section>
-  );
-
   const DetailedItem = ({ item, dayIdx }: { item: ScheduleItem, dayIdx: number }) => {
     const isActive = checkIsActive(dayIdx, item.time, item.duration);
     
     return (
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-10%" }}
+        layout
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
         className={`
           relative bg-white p-6 md:p-10 rounded-[2.5rem] shadow-sm border transition-all duration-500
           flex flex-col md:flex-row gap-6 md:gap-12 group
@@ -159,44 +135,123 @@ export default function ScheduleClient({ initialData }: { initialData: ScheduleD
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-12 space-y-16" ref={containerRef}>
-      {/* Visual Scroll Progress */}
-      <motion.div 
-        className="fixed top-0 left-0 right-0 h-1 bg-primary z-[60] origin-left"
-        style={{ scaleX }}
-      />
+    <div className="max-w-5xl mx-auto px-6 py-12 space-y-12" ref={containerRef}>
+      {/* Visual Scroll Progress (Only in Timeline Mode) */}
+      {viewMode === "timeline" && (
+        <motion.div 
+          className="fixed top-0 left-0 right-0 h-1 bg-primary z-[60] origin-left"
+          style={{ scaleX }}
+        />
+      )}
 
       {/* Header Section */}
-      <div className="space-y-6">
-        <div className="inline-flex items-center gap-2 bg-primary/5 text-primary text-[10px] font-black tracking-[0.3em] uppercase px-5 py-2 rounded-full border border-primary/10">
-          <Bookmark size={10} fill="currentColor" /> Unified Timeline
-        </div>
-        <div className="space-y-2">
-          <h1 className="text-6xl md:text-8xl font-display font-black tracking-tighter uppercase leading-[0.9]">
-            RETREAT <br/> <span className="text-primary">JOURNEY</span>
-          </h1>
-          <p className="text-slate-400 font-serif italic text-xl tracking-tight max-w-lg">
-            A continuous spiritual flow from Opening Night to the Final Commissioning.
-          </p>
+      <div className="space-y-10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+          <div className="space-y-4">
+            <div className="inline-flex items-center gap-2 bg-primary/5 text-primary text-[10px] font-black tracking-[0.3em] uppercase px-5 py-2 rounded-full border border-primary/10">
+              <Bookmark size={10} fill="currentColor" /> {viewMode === "detailed" ? "Detailed View" : "Unified Timeline"}
+            </div>
+            <h1 className="text-6xl md:text-8xl font-display font-black tracking-tighter uppercase leading-[0.9]">
+              RETREAT <br/> <span className="text-primary">{viewMode === "detailed" ? "SESSIONS" : "JOURNEY"}</span>
+            </h1>
+          </div>
+
+          {/* View Mode Switcher */}
+          <div className="flex bg-slate-100 p-1.5 rounded-[2rem] border border-slate-200/50 self-start">
+            <button 
+              onClick={() => setViewMode("detailed")}
+              className={`
+                flex items-center gap-2 px-6 py-3 rounded-[1.5rem] text-xs font-black tracking-widest uppercase transition-all
+                ${viewMode === "detailed" ? "bg-white text-primary shadow-lg" : "text-slate-400 hover:text-slate-600"}
+              `}
+            >
+              <Calendar size={14} strokeWidth={3} /> By Day
+            </button>
+            <button 
+              onClick={() => setViewMode("timeline")}
+              className={`
+                flex items-center gap-2 px-6 py-3 rounded-[1.5rem] text-xs font-black tracking-widest uppercase transition-all
+                ${viewMode === "timeline" ? "bg-white text-primary shadow-lg" : "text-slate-400 hover:text-slate-600"}
+              `}
+            >
+              <LayoutList size={14} strokeWidth={3} /> Full Timeline
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Timeline Sections */}
-      <div className="space-y-24">
-        {[1, 2, 3].map((dayIdx) => {
-          const dayKey = `day${dayIdx}` as keyof ScheduleData;
-          const config = initialData.integrated[dayIdx - 1];
-          return (
-            <DaySection 
-              key={dayIdx}
-              dayIdx={dayIdx} 
-              items={initialData[dayKey] as ScheduleItem[]}
-              date={config?.date || `Day ${dayIdx}`}
-              theme={config?.theme || "Retreat Theme"}
-            />
-          );
-        })}
-      </div>
+      {/* Main Content Area */}
+      <AnimatePresence mode="wait">
+        {viewMode === "detailed" ? (
+          <motion.div 
+            key="detailed"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            className="space-y-12"
+          >
+            {/* Day Tabs */}
+            <div className="flex flex-wrap gap-4 border-b border-slate-100 pb-8">
+              {[1, 2, 3].map((day) => {
+                const config = initialData.integrated[day - 1];
+                const active = activeDay === day;
+                return (
+                  <button
+                    key={day}
+                    onClick={() => setActiveDay(day)}
+                    className={`
+                      px-8 py-5 rounded-[2rem] border transition-all duration-500 flex flex-col items-start gap-1 group
+                      ${active ? "bg-primary border-primary shadow-xl shadow-primary/20 scale-105" : "bg-white border-slate-100 text-slate-400 hover:border-primary/30"}
+                    `}
+                  >
+                    <span className={`text-[10px] font-black uppercase tracking-widest ${active ? "text-white/60" : "text-primary/60 group-hover:text-primary"}`}>Day {day}</span>
+                    <span className={`text-xl font-display font-black tracking-tight ${active ? "text-white" : "text-slate-800"}`}>{config?.date || `Day ${day}`}</span>
+                    {active && <p className="text-[10px] text-white/50 font-serif italic mt-1">{config?.theme}</p>}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Current Day Schedule */}
+            <div className="space-y-6">
+              {(initialData[`day${activeDay}` as keyof ScheduleData] as ScheduleItem[]).map((item, i) => (
+                <DetailedItem key={i} item={item} dayIdx={activeDay} />
+              ))}
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div 
+            key="timeline"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="space-y-24"
+          >
+            {[1, 2, 3].map((dayIdx) => {
+              const dayKey = `day${dayIdx}` as keyof ScheduleData;
+              const config = initialData.integrated[dayIdx - 1];
+              return (
+                <section key={dayIdx} className="space-y-12">
+                   <div className="sticky top-20 z-30 py-4 -mx-6 px-6 bg-surface/80 backdrop-blur-xl border-b border-slate-100 flex items-end justify-between">
+                    <div className="space-y-1">
+                      <div className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">Day {dayIdx}</div>
+                      <h2 className="text-3xl font-display font-black tracking-tighter uppercase">{config?.date}</h2>
+                    </div>
+                    <div className="text-right pb-1">
+                      <p className="text-slate-400 font-serif italic text-sm">{config?.theme}</p>
+                    </div>
+                  </div>
+                  <div className="space-y-8">
+                    {(initialData[dayKey] as ScheduleItem[]).map((item, i) => (
+                      <DetailedItem key={i} item={item} dayIdx={dayIdx} />
+                    ))}
+                  </div>
+                </section>
+              );
+            })}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Footer Decoration */}
       <div className="py-32 flex flex-col items-center gap-8">
