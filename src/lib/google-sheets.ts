@@ -147,6 +147,20 @@ export async function getMainData() {
     staff_4_name: "부장/회계",
     staff_4_role: "서준호 & 이진희 선생님",
     staff_4_img: "",
+    // New Sections
+    section_contacts_title: "주요 담당자",
+    section_programs_title: "프로그램",
+    // Contacts (5)
+    contact_1_label: "총괄 기획", contact_1_value: "박성광 선생님",
+    contact_2_label: "시설 및 예약", contact_2_value: "차준호 선생님",
+    contact_3_label: "차량 이동", contact_3_value: "박상태 선생님",
+    contact_4_label: "찬양 인도", contact_4_value: "홀임 찬양팀",
+    contact_5_label: "주방 봉사", contact_5_value: "이경희 선생님",
+    // Programs (4)
+    program_1_label: "조편성 진행", program_1_value: "6~7개 연합조 · 유주형 선생님",
+    program_2_label: "공동체 게임", program_2_value: "7~8개 코너 운영 · 권희운 선생님",
+    program_3_label: "도전! 골든벨", program_3_value: "성경 지식/QT · 김경희 선생님",
+    program_4_label: "Celebration", program_4_value: "경배와 찬양 · 졸업생 찬양팀",
   };
 
   try {

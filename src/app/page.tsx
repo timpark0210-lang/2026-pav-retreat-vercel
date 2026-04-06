@@ -136,8 +136,58 @@ export default async function HomePage() {
            </div>
         </div>
       </section>
+       {/* 4. Operational Excellence (Contacts & Programs) */}
+       <section className="px-6 max-w-5xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 py-10">
+          {/* Key Contacts */}
+          <div className="space-y-8">
+             <div className="flex items-center gap-3">
+                <Users className="text-primary" size={24} />
+                <h2 className="text-2xl font-black tracking-tight uppercase">
+                  {mainData?.section_contacts_title || "주요 담당자"}
+                </h2>
+             </div>
+             <div className="space-y-4">
+                {[1, 2, 3, 4, 5].map((i) => {
+                  const label = mainData?.[`contact_${i}_label`];
+                  const value = mainData?.[`contact_${i}_value`];
+                  if (!label) return null;
 
-      {/* 4. Ministry Team */}
+                  return (
+                    <div key={i} className="flex items-center justify-between py-4 border-b border-slate-50 group hover:px-2 transition-all">
+                      <span className="text-slate-400 font-bold text-sm uppercase tracking-widest">{label}</span>
+                      <span className="text-slate-800 font-black text-lg text-right">{value}</span>
+                    </div>
+                  );
+                })}
+             </div>
+          </div>
+
+          {/* Core Programs */}
+          <div className="space-y-8">
+             <div className="flex items-center gap-3">
+                <ClipboardCheck className="text-primary" size={24} />
+                <h2 className="text-2xl font-black tracking-tight uppercase">
+                  {mainData?.section_programs_title || "프로그램"}
+                </h2>
+             </div>
+             <div className="space-y-4">
+                {[1, 2, 3, 4].map((i) => {
+                  const label = mainData?.[`program_${i}_label`];
+                  const value = mainData?.[`program_${i}_value`];
+                  if (!label) return null;
+
+                  return (
+                    <div key={i} className="flex flex-col gap-1 py-4 border-b border-slate-50 group hover:px-2 transition-all">
+                      <span className="text-primary font-black text-lg">{label}</span>
+                      <span className="text-slate-500 font-bold text-sm tracking-tight">{value}</span>
+                    </div>
+                  );
+                })}
+             </div>
+          </div>
+       </section>
+
+       {/* 5. Ministry Team */}
       <section className="px-6 max-w-5xl mx-auto w-full space-y-12">
          <h2 className="text-2xl font-black tracking-tight uppercase">
            {mainData?.section_staff_title || "Key Staff"}
