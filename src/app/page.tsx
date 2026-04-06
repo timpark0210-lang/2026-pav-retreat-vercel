@@ -2,8 +2,8 @@ import React from "react";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { getSheetValues } from "@/lib/google-sheets";
 import { ChevronRight, Calendar, MapPin, Users, Info } from "lucide-react";
+import { getSheetValues, getMainData, getGoogleDriveUrl } from "@/lib/google-sheets";
 
 export const metadata: Metadata = {
   title: "Home | PAV 2026",
@@ -26,6 +26,8 @@ async function getAnnouncements() {
 
 export default async function HomePage() {
   const notices = await getAnnouncements();
+  const mainData = await getMainData();
+  const heroUrl = getGoogleDriveUrl(mainData?.hero_image_id) || "/pav_2026_retreat_poster_1775388297277.png";
 
   return (
     <div className="flex flex-col gap-24 pb-32">
@@ -59,7 +61,7 @@ export default async function HomePage() {
           <div className="flex-1 relative aspect-square md:aspect-auto md:h-[600px] w-full max-w-lg rounded-[2rem] overflow-hidden shadow-2xl rotate-2 group-hover:rotate-0 transition-transform duration-700">
              <div className="absolute inset-0 bg-primary/20 mix-blend-overlay z-10" />
              <Image 
-               src="/pav_2026_retreat_poster_1775388297277.png"
+               src={heroUrl}
                alt="Watch & Follow 2026"
                fill
                className="object-cover group-hover:scale-105 transition-transform duration-1000"

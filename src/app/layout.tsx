@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Noto_Serif_KR, Manrope } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { getMainData, getGoogleDriveUrl } from "@/lib/google-sheets";
 import "@/app/globals.css";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -40,15 +41,18 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const mainData = await getMainData();
+  const logoUrl = getGoogleDriveUrl(mainData?.app_icon);
+
   return (
     <html lang="ko" className={`${plusJakarta.variable} ${notoSerif.variable} ${manrope.variable} antialiased`}>
       <body className="font-sans text-slate-900 bg-[#f5f7f9] min-h-screen">
-        <Navbar />
+        <Navbar logoUrl={logoUrl} />
         <main className="pt-20">
           {children}
         </main>

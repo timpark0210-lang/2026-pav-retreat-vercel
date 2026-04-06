@@ -111,3 +111,32 @@ export async function appendSheetValues(range: string, values: any[][]) {
     throw error;
   }
 }
+
+/**
+ * Fetch Key-Value configuration from MainData sheet
+ */
+export async function getMainData() {
+  try {
+    const rows = await getSheetValues("MainData!A2:B20");
+    const data: Record<string, string> = {};
+    rows.forEach(row => {
+      if (row[0] && row[1]) {
+        data[row[0].trim()] = row[1].trim();
+      }
+    });
+    return data;
+  } catch (error) {
+    console.warn("[WARN] Failed to fetch MainData, using empty config.");
+    return {} as Record<string, string>;
+  }
+}
+
+/**
+ * Universal Google Drive Image URL Converter
+ * Returns a high-fidelity direct link for Next.js Image component
+ */
+export function getGoogleDriveUrl(docId: string) {
+  if (!docId) return "";
+  // High-fidelity thumbnail/direct link format (lh3)
+  return `https://lh3.googleusercontent.com/u/0/d/${docId}`;
+}
