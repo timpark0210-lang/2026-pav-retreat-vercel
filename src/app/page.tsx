@@ -61,7 +61,7 @@ export default async function HomePage() {
         />
         <div className="absolute inset-0 bg-linear-to-b from-transparent via-primary/10 to-surface/40" />
         
-        <div className="relative z-10 space-y-4 px-6">
+        <div className="relative z-10 space-y-4 px-6 mb-12">
           <span className="inline-block text-white/60 tracking-[0.4em] font-bold text-xs md:text-sm uppercase animate-fade-in">
             {heroTitleTop}
           </span>
@@ -73,15 +73,15 @@ export default async function HomePage() {
 
       {/* 2. Main Title & Dynamic Info Cards */}
       <section className="px-6 max-w-4xl mx-auto w-full -mt-24 z-20 space-y-12">
-        <div className="text-center space-y-8 mb-16">
+        <div className="text-center space-y-8 mb-16 pt-12">
            <h2 className="text-3xl md:text-5xl font-black tracking-tighter text-on-surface drop-shadow-sm uppercase">
              {appTitle}
            </h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-           {/* Date Card */}
-           <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-xl shadow-primary/5 flex items-center gap-6 group hover:translate-y-[-4px] transition-all">
+           {/* Date Card -> Links to Schedule */}
+           <Link href="/schedule" className="bg-white/80 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-xl shadow-primary/5 flex items-center gap-6 group hover:translate-y-[-4px] active:scale-[0.98] transition-all">
               <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-white shadow-lg shadow-primary/20 shrink-0">
                 <Calendar size={28} />
               </div>
@@ -91,10 +91,15 @@ export default async function HomePage() {
                     {mainData?.info_date_sub || "3일간의 믿음의 여정"}
                  </p>
               </div>
-           </div>
+           </Link>
 
-           {/* Location Card */}
-           <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-xl shadow-primary/5 flex items-center gap-6 group hover:translate-y-[-4px] transition-all">
+           {/* Location Card -> Links to Google Maps */}
+           <a 
+             href="https://www.google.com/maps/place/Moirs+Point+Christian+Centre/@-36.1264841,174.5663731,17z/data=!3m1!4b1!4m6!3m5!1s0x6d0d5885e3506141:0xe28f80456108151b!8m2!3d-36.1264884!4d174.568948!16s%2Fg%2F1tdr9v0z?entry=ttu" 
+             target="_blank" 
+             rel="noopener noreferrer"
+             className="bg-white/80 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-xl shadow-primary/5 flex items-center gap-6 group hover:translate-y-[-4px] active:scale-[0.98] transition-all"
+           >
               <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-white shadow-lg shadow-primary/20 shrink-0">
                 <MapPin size={28} />
               </div>
@@ -106,11 +111,8 @@ export default async function HomePage() {
                    {mainData?.info_location_sub || "Mangawhai, Northland"}
                  </p>
               </div>
-              {/* Optional MAP Icon in mobile reference */}
-              <div className="ml-auto w-12 h-12 bg-green-50 rounded-xl overflow-hidden shrink-0 hidden sm:block opacity-40">
-                 <div className="w-full h-full bg-primary/10 flex items-center justify-center font-bold text-[10px] text-primary">MAP</div>
-              </div>
-           </div>
+              <div className="ml-auto w-12 h-12 bg-primary/5 rounded-xl flex items-center justify-center font-bold text-[10px] text-primary shrink-0 opacity-40 group-hover:opacity-100 transition-opacity">MAP</div>
+           </a>
         </div>
       </section>
 
@@ -130,12 +132,13 @@ export default async function HomePage() {
              </p>
              <div className="mt-10 pt-8 border-t border-slate-100">
                 <p className="text-slate-400 font-medium text-sm md:text-base italic">
-                  {mainData?.core_message_ref || "Hebrews 12:2"}
+                   {mainData?.core_message_ref || "Hebrews 12:2"}
                 </p>
              </div>
            </div>
         </div>
       </section>
+
        {/* 4. Operational Excellence (Contacts & Programs) */}
        <section className="px-6 max-w-5xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 py-10">
           {/* Key Contacts */}
@@ -220,7 +223,7 @@ export default async function HomePage() {
           </div>
       </section>
 
-      {/* 5. List-style Announcements */}
+      {/* 6. List-style Announcements */}
       {notices.length > 0 && (
         <section className="px-6 max-w-4xl mx-auto w-full space-y-12">
           <div className="flex items-center justify-between">
@@ -234,32 +237,40 @@ export default async function HomePage() {
           
           <div className="space-y-4">
             {notices.map((notice, i) => {
-              // Simple icon mapping based on content keywords
+              const lines = notice.content?.split("\n") || [];
+              const title = lines[0];
+              const body = lines.slice(1).join("\n");
+
               let Icon = Bell;
               if (notice.content?.includes("준비물")) Icon = ClipboardCheck;
               if (notice.content?.includes("집합") || notice.content?.includes("시간")) Icon = Bus;
 
               return (
-                <div key={i} className="list-notice-card group">
-                  <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-primary shrink-0 group-hover:bg-primary group-hover:text-white transition-all">
+                <Link href="/notice" key={i} className="list-notice-card group">
+                  <div className="w-12 h-12 bg-primary/5 rounded-2xl flex items-center justify-center text-primary shrink-0 group-hover:bg-primary group-hover:text-white transition-all shadow-inner">
                     <Icon size={24} />
                   </div>
                   <div className="space-y-1">
-                    <h4 className="font-black text-lg text-slate-800 tracking-tight leading-none">
-                      {notice.content?.split("\n")[0]}
+                    <h4 className="font-black text-xl text-slate-800 tracking-tight leading-tight">
+                      {title}
                     </h4>
-                    <p className="text-slate-400 text-sm line-clamp-2 leading-relaxed">
-                      {notice.content}
-                    </p>
+                    {body && (
+                      <p className="text-slate-400 text-sm line-clamp-1 leading-relaxed font-bold">
+                        {body}
+                      </p>
+                    )}
                   </div>
-                </div>
+                  <div className="ml-auto p-2 text-slate-300 group-hover:text-primary transition-colors">
+                    <ChevronRight size={20} />
+                  </div>
+                </Link>
               );
             })}
           </div>
         </section>
       )}
 
-      {/* 6. Dynamic Call to Action */}
+      {/* 7. Dynamic Call to Action */}
       <section className="px-6 max-w-4xl mx-auto w-full text-center">
          <Link 
            href="/schedule" 

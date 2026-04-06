@@ -54,9 +54,25 @@ export default async function NoticePage() {
                 </div>
               </div>
 
-              <p className="text-2xl font-medium leading-relaxed text-slate-800 mb-8 whitespace-pre-wrap">
-                {notice.content || "소식이 없습니다."}
-              </p>
+              <div className="space-y-6">
+                {(() => {
+                  const lines = notice.content?.split("\n") || [];
+                  const title = lines[0];
+                  const body = lines.slice(1).join("\n");
+                  return (
+                    <>
+                      <h3 className="text-3xl font-black text-slate-800 tracking-tighter leading-tight">
+                        {title}
+                      </h3>
+                      {body && (
+                        <p className="text-xl leading-relaxed text-slate-500 whitespace-pre-wrap font-medium">
+                          {body}
+                        </p>
+                      )}
+                    </>
+                  );
+                })()}
+              </div>
 
               {notice.fileUrl && (
                 <div className="flex items-center gap-4 p-6 bg-slate-50 rounded-3xl border border-dashed border-slate-200 group-hover:border-primary/20 transition-all">

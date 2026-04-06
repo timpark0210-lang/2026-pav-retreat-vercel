@@ -193,7 +193,7 @@ export function getGoogleDriveUrl(docId: string) {
  */
 export async function getScheduleData() {
   try {
-    const rows = await getSheetValues("Timetable_Detailed!A2:F100");
+    const rows = await getSheetValues("Timetable_Detailed!A2:G100");
     if (!rows || rows.length === 0) return null;
     
     const schedule: Record<string, any[]> = {
@@ -214,7 +214,8 @@ export async function getScheduleData() {
         duration: row[2] || "",
         program: row[3] || "",
         detail: row[4] || "",
-        location: row[5] || ""
+        location: row[5] || "",
+        staff: row[6] || ""
       };
       
       if (day === "day1") schedule.day1.push(item);

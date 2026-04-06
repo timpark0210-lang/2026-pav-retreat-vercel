@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  --font-plus-jakarta: var(--font-plus-jakarta), ui-sans-serif, system-ui;
-  --font-noto-serif: var(--font-noto-serif), ui-serif, Georgia;
-  --font-manrope: var(--font-manrope), ui-monospace, SFMono-Regular;
+  --font-display: var(--font-plus-jakarta), ui-sans-serif, system-ui;
+  --font-serif: var(--font-noto-serif), ui-serif, Georgia;
+  --font-mono: var(--font-manrope), ui-monospace, SFMono-Regular;
 
   --color-surface: #f5f7f9;
   --color-surface-low: #eef1f3;
@@ -24,7 +24,7 @@
     font-family: var(--font-plus-jakarta);
   }
 
-  h1, h2, h3, h4, .font-display {
+  h1, h2, h3, h4 {
     font-family: var(--font-plus-jakarta);
     @apply font-bold tracking-tight;
   }
@@ -79,23 +79,48 @@
   }
 
   .list-notice-card {
-    @apply bg-white p-6 rounded-3xl flex items-start gap-6 transition-all hover:shadow-lg border border-slate-50;
+    @apply bg-white p-6 rounded-[2rem] flex items-start gap-6 transition-all hover:shadow-2xl border border-slate-50 relative overflow-hidden;
+    @apply hover:scale-[1.01] active:scale-[0.98];
   }
 
   .core-message-box {
     @apply bg-white/50 backdrop-blur-xl border border-white/40 p-12 rounded-[2.5rem] shadow-sm;
   }
+
+  /* Logo & Title Refinement */
+  .logo-container {
+    @apply flex items-center gap-3 py-1 px-2 rounded-2xl transition-all;
+  }
+  .logo-box {
+    @apply w-10 h-10 bg-primary/5 rounded-xl flex items-center justify-center border border-primary/10 overflow-hidden shadow-inner;
+  }
+  .logo-text {
+    @apply font-display font-black text-lg md:text-xl tracking-tighter text-on-surface leading-none;
+    font-family: var(--font-plus-jakarta);
+  }
 }
 
-/* Custom Spacing & Utilities for Asymmetry */
-.pl-editorial { padding-left: clamp(2rem, 10vw, 10rem); }
-.pr-editorial { padding-right: clamp(1.5rem, 6vw, 6rem); }
-
-/* Hide scrollbars but keep functionality */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+/* Horizontal Matrix Layout Utility */
+.schedule-matrix-grid {
+  @apply grid grid-cols-[120px_1fr_1fr_1fr] border-t border-l border-slate-100 rounded-[2rem] overflow-hidden bg-white shadow-sm;
 }
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+.schedule-matrix-cell {
+  @apply border-r border-b border-slate-100 p-4 text-center flex flex-col justify-center items-center gap-1 min-h-[80px];
+}
+
+@keyframes pulse-primary {
+  0%, 100% { 
+    border-color: rgba(0, 94, 160, 0.2);
+    box-shadow: none;
+    transform: scale(1);
+  }
+  50% { 
+    border-color: #005ea0;
+    box-shadow: 0 0 20px rgba(0, 94, 160, 0.2);
+    transform: scale(1.01);
+  }
+}
+
+.animate-pulse-primary {
+  animation: pulse-primary 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
