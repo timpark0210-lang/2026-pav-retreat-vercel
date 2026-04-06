@@ -259,7 +259,7 @@ export default function HomeClient({ notices, mainData, heroUrl }: HomeClientPro
                   </div>
                   <div className="space-y-1">
                     <h4 className="text-xl font-display font-black text-slate-900 tracking-tighter">{name}</h4>
-                    <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em]">{role}</p>
+                    <p className="text-[11px] font-black text-primary uppercase tracking-[0.15em] leading-tight mt-0.5">{role}</p>
                   </div>
                 </motion.div>
               );

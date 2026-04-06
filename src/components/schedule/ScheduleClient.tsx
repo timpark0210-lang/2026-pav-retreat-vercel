@@ -191,7 +191,7 @@ export default function ScheduleClient({ initialData }: { initialData: ScheduleD
             className="space-y-12"
           >
             {/* Day Tabs */}
-            <div className="flex flex-wrap gap-4 border-b border-slate-100 pb-8">
+            <div className="grid grid-cols-3 gap-3 md:gap-6 border-b border-slate-100 pb-10">
               {[1, 2, 3].map((day) => {
                 const config = initialData.integrated[day - 1];
                 const active = activeDay === day;
@@ -200,13 +200,13 @@ export default function ScheduleClient({ initialData }: { initialData: ScheduleD
                     key={day}
                     onClick={() => setActiveDay(day)}
                     className={`
-                      px-8 py-5 rounded-[2rem] border transition-all duration-500 flex flex-col items-start gap-1 group
+                      p-3 md:p-6 rounded-2xl md:rounded-[2rem] border transition-all duration-500 flex flex-col items-center text-center gap-1 group
                       ${active ? "bg-primary border-primary shadow-xl shadow-primary/20 scale-105" : "bg-white border-slate-100 text-slate-400 hover:border-primary/30"}
                     `}
                   >
-                    <span className={`text-[10px] font-black uppercase tracking-widest ${active ? "text-white/60" : "text-primary/60 group-hover:text-primary"}`}>Day {day}</span>
-                    <span className={`text-xl font-display font-black tracking-tight ${active ? "text-white" : "text-slate-800"}`}>{config?.date || `Day ${day}`}</span>
-                    {active && <p className="text-[10px] text-white/50 font-serif italic mt-1">{config?.theme}</p>}
+                    <span className={`text-[9px] md:text-[10px] font-black uppercase tracking-widest ${active ? "text-white/60" : "text-primary/60 group-hover:text-primary"}`}>Day {day}</span>
+                    <span className={`text-sm md:text-xl font-display font-black tracking-tight ${active ? "text-white" : "text-slate-800"}`}>{config?.date || `Day ${day}`}</span>
+                    {active && <p className="hidden md:block text-[10px] text-white/50 font-serif italic mt-1">{config?.theme}</p>}
                   </button>
                 );
               })}
