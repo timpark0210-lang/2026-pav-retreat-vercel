@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { label: "Schedule", href: "/schedule" },
   { label: "Attendance", href: "/attendance" },
   { label: "Notice", href: "/notice" },
+  { label: "Scripture", href: "/scripture" },
 ];
 
 interface NavbarProps {

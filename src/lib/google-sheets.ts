@@ -181,3 +181,26 @@ export async function getScheduleData() {
     return null;
   }
 }
+
+/**
+ * Fetch spiritual guidance from Scripture sheet
+ */
+export async function getScriptureData() {
+  try {
+    const rows = await getSheetValues("Scripture!A2:G50");
+    if (!rows || rows.length === 0) return [];
+    
+    return rows.map((row) => ({
+      category: row[0] || "",
+      verse: row[1] || "",
+      text: row[2] || "",
+      theme: row[3] || "",
+      actionLabel: row[4] || "",
+      actionLink: row[5] || "",
+      metadata: row[6] || ""
+    }));
+  } catch (error) {
+    console.error("Failed to fetch ScriptureData:", error);
+    return [];
+  }
+}
