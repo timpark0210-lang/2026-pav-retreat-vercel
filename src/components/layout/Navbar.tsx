@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Search, Bell, User } from "lucide-react";
+import { User, Bell } from "lucide-react";
 
 const NAV_ITEMS = [
   { label: "Home", href: "/" },
@@ -19,7 +19,6 @@ interface NavbarProps {
 
 export default function Navbar({ logoUrl }: NavbarProps) {
   const pathname = usePathname();
-  const [isScrolled, setIsScrolled] = useState(false);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-white/20">
@@ -32,8 +31,8 @@ export default function Navbar({ logoUrl }: NavbarProps) {
                 <Image 
                   src={logoUrl} 
                   alt="PAV 2026 Logo" 
-                  width={32} 
-                  height={32} 
+                  width={34} 
+                  height={34} 
                   className="object-contain"
                 />
               ) : (
@@ -63,14 +62,7 @@ export default function Navbar({ logoUrl }: NavbarProps) {
         {/* Action Icons */}
         <div className="flex items-center gap-4">
           <Link href="/attendance" className="p-2 text-slate-400 hover:text-primary transition-colors relative">
-            <Bell size={20} />
-            <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-primary rounded-full ring-2 ring-white"></span>
-          </Link>
-          
-          <Link href="/register" className="hidden sm:block ml-2">
-            <button className="bg-primary hover:bg-primary/90 text-white rounded-full px-6 py-2.5 text-sm font-bold shadow-lg shadow-primary/20 transition-all active:scale-95">
-              Register
-            </button>
+            <User size={22} />
           </Link>
         </div>
       </div>

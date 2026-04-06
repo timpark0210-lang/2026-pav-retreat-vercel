@@ -49,11 +49,6 @@ export default async function HomePage() {
               "그들이 주를 보며 배우고 따라가는 수련회"
             </p>
             <div className="flex items-center gap-6 pt-4">
-              <Link href="/register">
-                <button className="bg-white text-primary px-10 py-4 rounded-full font-bold shadow-2xl hover:scale-105 transition-all text-lg">
-                  Register Now
-                </button>
-              </Link>
               <Link href="/schedule" className="group/btn flex items-center gap-2 text-white font-bold text-lg">
                 View Schedule <ChevronRight className="group-hover/btn:translate-x-1 transition-transform" />
               </Link>

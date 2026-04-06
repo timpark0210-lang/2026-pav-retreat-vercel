@@ -140,3 +140,44 @@ export function getGoogleDriveUrl(docId: string) {
   // High-fidelity thumbnail/direct link format (lh3)
   return `https://lh3.googleusercontent.com/u/0/d/${docId}`;
 }
+
+/**
+ * Fetch detailed timetable from Timetable_Detailed sheet
+ */
+export async function getScheduleData() {
+  try {
+    const rows = await getSheetValues("Timetable_Detailed!A2:F100");
+    if (!rows || rows.length === 0) return null;
+    
+    const schedule: Record<string, any[]> = {
+      day1: [],
+      day2: [],
+      day3: [],
+      integrated: [
+        { day: "Day 1", date: "4/17 (Fri)", theme: "Opening & Vision" },
+        { day: "Day 2", date: "4/18 (Sat)", theme: "Community & Growth" },
+        { day: "Day 3", date: "4/19 (Sun)", theme: "Sending & Mission" },
+      ]
+    };
+    
+    rows.forEach((row, i) => {
+      const day = row[0]?.toString().trim().toLowerCase().replace(" ", "") || "";
+      const item = {
+        time: row[1] || "",
+        duration: row[2] || "",
+        program: row[3] || "",
+        detail: row[4] || "",
+        location: row[5] || ""
+      };
+      
+      if (day === "day1") schedule.day1.push(item);
+      else if (day === "day2") schedule.day2.push(item);
+      else if (day === "day3") schedule.day3.push(item);
+    });
+    
+    return schedule;
+  } catch (error) {
+    console.warn("[WARN] Failed to fetch ScheduleData, using null.");
+    return null;
+  }
+}
