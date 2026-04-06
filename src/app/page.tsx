@@ -5,6 +5,8 @@ import Link from "next/link";
 import { ChevronRight, Calendar, MapPin, Users, Info } from "lucide-react";
 import { getSheetValues, getMainData, getGoogleDriveUrl } from "@/lib/google-sheets";
 
+export const revalidate = 60; // Auto-sync spreadsheet changes every 60 seconds
+
 export const metadata: Metadata = {
   title: "Home | PAV 2026",
   description: "WATCH & FOLLOW - 2026 PAV Youth Retreat",

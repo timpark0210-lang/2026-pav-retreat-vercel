@@ -5,6 +5,8 @@ import Footer from "@/components/layout/Footer";
 import { getMainData, getGoogleDriveUrl } from "@/lib/google-sheets";
 import "@/app/globals.css";
 
+export const revalidate = 60; // Auto-sync spreadsheet changes every 60 seconds
+
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-plus-jakarta",
