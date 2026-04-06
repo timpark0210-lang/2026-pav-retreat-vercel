@@ -50,11 +50,12 @@ export default async function RootLayout({
 }>) {
   const mainData = await getMainData();
   const logoUrl = getGoogleDriveUrl(mainData?.app_icon);
+  const appTitle = mainData?.app_title;
 
   return (
     <html lang="ko" className={`${plusJakarta.variable} ${notoSerif.variable} ${manrope.variable} antialiased`}>
       <body className="font-sans text-slate-900 bg-[#f5f7f9] min-h-screen">
-        <Navbar logoUrl={logoUrl} />
+        <Navbar logoUrl={logoUrl} appTitle={appTitle} />
         <main className="pt-20">
           {children}
         </main>

@@ -116,9 +116,29 @@ export async function appendSheetValues(range: string, values: any[][]) {
  * Fetch Key-Value configuration from MainData sheet
  */
 export async function getMainData() {
+  const defaults: Record<string, string> = {
+    app_title: "2026 PAV 파워웨이브 수련회",
+    hero_title_top: "ANNUAL RETREAT",
+    hero_title_main: "Watch and Follow",
+    hero_subtext: "그들이 주를 보며 배우고 따라가는 수련회",
+    info_date_label: "날짜",
+    info_date_value: "2026년 4월 17일(금) - 19일(주일)",
+    info_date_sub: "3일간의 믿음의 여정",
+    info_location_label: "장소",
+    info_location_value: "Moirs Point Christian Centre",
+    info_location_sub: "Mangawhai, Northland",
+    core_message_title: "Core Message",
+    core_message_quote: "예수님께서 가신 길을 바라보고(Watch), 그분의 발자취를 온전히 따라가는(Follow) PAV 청소년이 되기를 소망합니다.",
+    core_message_ref: "히브리서 12:2 - \"믿음의 주요 또 온전하게 하시는 이인 예수를 바라보자\"",
+    section_notice_title: "공지사항",
+    section_staff_title: "섬기는 분들",
+    btn_action_label: "일정 확인하기",
+    btn_action_link: "/schedule"
+  };
+
   try {
     const rows = await getSheetValues("MainData!A2:B100");
-    const data: Record<string, string> = {};
+    const data: Record<string, string> = { ...defaults };
     rows.forEach(row => {
       if (row[0] && row[1]) {
         data[row[0].trim()] = row[1].trim();
@@ -126,8 +146,8 @@ export async function getMainData() {
     });
     return data;
   } catch (error) {
-    console.warn("[WARN] Failed to fetch MainData, using empty config.");
-    return {} as Record<string, string>;
+    console.warn("[WARN] Failed to fetch MainData, using defaults.");
+    return defaults;
   }
 }
 

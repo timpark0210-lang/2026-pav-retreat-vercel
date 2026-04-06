@@ -16,10 +16,12 @@ const NAV_ITEMS = [
 
 interface NavbarProps {
   logoUrl?: string;
+  appTitle?: string;
 }
 
-export default function Navbar({ logoUrl }: NavbarProps) {
+export default function Navbar({ logoUrl, appTitle }: NavbarProps) {
   const pathname = usePathname();
+  const displayTitle = appTitle || "PAV 2026";
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-white/20">
@@ -40,7 +42,7 @@ export default function Navbar({ logoUrl }: NavbarProps) {
                 <span className="font-display font-black text-xl">P</span>
               )}
             </div>
-            <span className="logo-text">PAV 2026</span>
+            <span className="logo-text">{displayTitle}</span>
           </div>
         </Link>
 
