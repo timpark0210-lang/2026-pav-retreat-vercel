@@ -14,7 +14,7 @@ import {
   ArrowRight,
   Sparkles
 } from "lucide-react";
-import { getSheetValues, getMainData, getGoogleDriveUrl } from "@/lib/google-sheets";
+import { getSheetValues, getMainData, getGoogleDriveUrl, getNoticeData } from "@/lib/google-sheets";
 
 export const revalidate = 60; // Auto-sync spreadsheet changes every 60 seconds
 
@@ -23,22 +23,8 @@ export const metadata: Metadata = {
   description: "WATCH & FOLLOW - 2026 PAV Power Wave Youth Retreat",
 };
 
-async function getAnnouncements() {
-  try {
-    const rows = await getSheetValues("Notice!A:G");
-    return rows.slice(1, 4).map((row, i) => ({
-      id: row[0] || i,
-      content: row[1],
-      author: row[2],
-      time: row[3],
-    }));
-  } catch (e) {
-    return [];
-  }
-}
-
 export default async function HomePage() {
-  const notices = await getAnnouncements();
+  const notices = await getNoticeData();
   const mainData = await getMainData();
   
   // Dynamic Assets & Strings
@@ -236,17 +222,16 @@ export default async function HomePage() {
           </div>
           
           <div className="space-y-4">
-            {notices.map((notice, i) => {
-              const lines = notice.content?.split("\n") || [];
-              const title = lines[0];
-              const body = lines.slice(1).join("\n");
+            {notices.slice(0, 3).map((notice, i) => {
+              const title = notice.title;
+              const content = notice.content;
 
               let Icon = Bell;
-              if (notice.content?.includes("준비물")) Icon = ClipboardCheck;
-              if (notice.content?.includes("집합") || notice.content?.includes("시간")) Icon = Bus;
+              if (content?.includes("준비물") || title?.includes("준비물")) Icon = ClipboardCheck;
+              if (content?.includes("집합") || title?.includes("집합") || title?.includes("시간")) Icon = Bus;
 
               return (
-                <Link href="/notice" key={i} className="list-notice-card group">
+                <Link href={`/notice/${notice.id}`} key={i} className="list-notice-card group">
                   <div className="w-12 h-12 bg-primary/5 rounded-2xl flex items-center justify-center text-primary shrink-0 group-hover:bg-primary group-hover:text-white transition-all shadow-inner">
                     <Icon size={24} />
                   </div>
@@ -254,9 +239,9 @@ export default async function HomePage() {
                     <h4 className="font-black text-xl text-slate-800 tracking-tight leading-tight">
                       {title}
                     </h4>
-                    {body && (
+                    {content && (
                       <p className="text-slate-400 text-sm line-clamp-1 leading-relaxed font-bold">
-                        {body}
+                        {content}
                       </p>
                     )}
                   </div>
@@ -267,19 +252,21 @@ export default async function HomePage() {
               );
             })}
           </div>
+
+          {/* See All Button */}
+          {notices.length > 3 && (
+            <div className="flex justify-center mt-10">
+              <Link href="/notice" className="group flex items-center gap-2 text-slate-400 hover:text-primary font-black uppercase tracking-widest text-xs transition-all">
+                <span>View All Announcements</span>
+                <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
+          )}
         </section>
       )}
 
-      {/* 7. Dynamic Call to Action */}
-      <section className="px-6 max-w-4xl mx-auto w-full text-center">
-         <Link 
-           href="/schedule" 
-           className="btn-primary w-full py-5 text-xl tracking-tight flex items-center justify-center gap-3 shadow-2xl shadow-primary/40 group"
-         >
-           {mainData?.btn_action_label || "View Full Schedule"}
-           <ArrowRight className="group-hover:translate-x-2 transition-transform" />
-         </Link>
-      </section>
+      {/* 7. Strategic Layout Spacer - Replaced Redundant Button with ergonomic spacer */}
+      <div className="h-10" />
     </div>
   );
 }

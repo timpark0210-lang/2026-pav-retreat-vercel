@@ -1,29 +1,15 @@
-import React from "react";
+import Link from "next/link";
 import { Metadata } from "next";
-import { getSheetValues } from "@/lib/google-sheets";
-import { Megaphone, Calendar, FileText, ExternalLink } from "lucide-react";
+import { getNoticeData } from "@/lib/google-sheets";
+import { Megaphone, Calendar, FileText, ExternalLink, Bell, Info, AlertCircle, ClipboardCheck, ChevronRight } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Notice | PAV 2026",
 };
 
 export default async function NoticePage() {
-  let notices: any[] = [];
-  
-  try {
-    const rows = await getSheetValues("Notice!A:E");
-    if (rows && Array.isArray(rows)) {
-      notices = rows.slice(1).map((row) => ({
-        time: row[0] || "No Time",
-        author: row[1] || "Admin",
-        content: row[2] || "",
-        fileName: row[3] || null,
-        fileUrl: row[4] || null,
-      })).reverse();
-    }
-  } catch (error) {
-    console.error("Failed to fetch notices for SSG:", error);
-  }
+  const notices = await getNoticeData();
+  const sortedNotices = [...notices].reverse();
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-20 space-y-20">
@@ -37,65 +23,48 @@ export default async function NoticePage() {
         </p>
       </header>
 
-      <div className="grid grid-cols-1 gap-12">
-        {notices.length > 0 ? (
-          notices.map((notice, i) => (
-            <div key={i} className="bg-white p-12 rounded-[3rem] shadow-sm hover:shadow-2xl transition-all duration-500 border border-slate-50 relative overflow-hidden group">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-primary">
-                  <Megaphone size={24} />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{notice.author || "Admin"}</span>
-                  <span className="text-sm font-bold text-slate-700 flex items-center gap-1">
-                    <Calendar size={12} className="text-primary/40" /> 
-                    {notice.time?.toString().slice(0, 16) || "Recent"}
-                  </span>
-                </div>
-              </div>
+      <div className="grid grid-cols-1 gap-6 max-w-4xl mx-auto">
+        {sortedNotices.length > 0 ? (
+          sortedNotices.map((notice, i) => {
+            let Icon = Bell;
+            if (notice.type === "urgent") Icon = AlertCircle;
+            if (notice.type === "info") Icon = Info;
+            if (notice.content?.includes("준비물") || notice.title?.includes("준비물")) Icon = ClipboardCheck;
 
-              <div className="space-y-6">
-                {(() => {
-                  const lines = notice.content?.split("\n") || [];
-                  const title = lines[0];
-                  const body = lines.slice(1).join("\n");
-                  return (
-                    <>
-                      <h3 className="text-3xl font-black text-slate-800 tracking-tighter leading-tight">
-                        {title}
-                      </h3>
-                      {body && (
-                        <p className="text-xl leading-relaxed text-slate-500 whitespace-pre-wrap font-medium">
-                          {body}
-                        </p>
-                      )}
-                    </>
-                  );
-                })()}
-              </div>
-
-              {notice.fileUrl && (
-                <div className="flex items-center gap-4 p-6 bg-slate-50 rounded-3xl border border-dashed border-slate-200 group-hover:border-primary/20 transition-all">
-                  <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-slate-400">
-                    <FileText size={20} />
+            return (
+              <Link 
+                key={i} 
+                href={`/notice/${notice.id}`}
+                className="group bg-white p-8 rounded-[2rem] border border-slate-100 flex items-center gap-6 hover:shadow-xl hover:border-primary/20 transition-all duration-300 active:scale-[0.98]"
+              >
+                <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all shadow-inner shrink-0">
+                  <Icon size={28} strokeWidth={2} />
+                </div>
+                
+                <div className="flex-1 min-w-0 space-y-1">
+                  <div className="flex items-center gap-3 mb-1">
+                     <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">{notice.author || "Admin"}</span>
+                     <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">{notice.time}</span>
                   </div>
-                  <div className="flex-1">
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Attachment</p>
-                    <p className="text-sm font-bold text-slate-700 truncate max-w-[200px] md:max-w-md">{notice.fileName || "Download Attachment"}</p>
-                  </div>
-                  <a href={notice.fileUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-sm rounded-xl gap-2">
-                    <ExternalLink size={14} /> Open
-                  </a>
+                  <h3 className="text-xl md:text-2xl font-black text-slate-800 tracking-tight leading-tight truncate">
+                    {notice.title}
+                  </h3>
+                  {notice.content && (
+                    <p className="text-slate-400 text-sm font-bold line-clamp-1 leading-relaxed italic opacity-70">
+                      {notice.content}
+                    </p>
+                  )}
                 </div>
-              )}
 
-              {/* Decorative accent */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-12 -mt-12 transition-all group-hover:scale-150 group-hover:bg-primary/10" />
-            </div>
-          ))
+                <div className="p-3 text-slate-200 group-hover:text-primary transition-all group-hover:translate-x-1">
+                   <ChevronRight size={20} />
+                </div>
+              </Link>
+            );
+          })
         ) : (
-          <div className="text-center py-40 bg-surface-lowest rounded-[3rem] border-2 border-dashed border-slate-100">
-             <p className="text-xl font-serif text-slate-400">등록된 공지사항이 없습니다.</p>
+          <div className="text-center py-40 bg-white/50 rounded-[3rem] border-2 border-dashed border-slate-100 italic">
+             <p className="text-2xl font-serif text-slate-400 font-bold">등록된 공지사항이 아직 없습니다.</p>
           </div>
         )}
       </div>

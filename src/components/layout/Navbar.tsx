@@ -65,11 +65,9 @@ export default function Navbar({ logoUrl, appTitle }: NavbarProps) {
           })}
         </div>
 
-        {/* Action Icons */}
+        {/* Action Icons - Clean State */}
         <div className="flex items-center gap-4">
-          <Link href="/attendance" className="p-2 text-slate-400 hover:text-primary transition-colors relative">
-            <User size={22} />
-          </Link>
+          <div className="w-10 md:hidden" /> {/* Spacer for balanced mobile view */}
         </div>
       </div>
     </nav>

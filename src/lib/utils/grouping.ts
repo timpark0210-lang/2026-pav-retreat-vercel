@@ -39,9 +39,8 @@ export function groupStudentsByClass(rows: any[][]): GroupedStudents {
     
     const rawGroup = row[0]?.toString().trim() || "Unassigned";
     const name = row[1]?.toString().trim();
+    if (!name || name.includes("총합") || name.includes("Summary") || name.includes("Total")) return;
     const attendance = row[2]?.toString().trim() || "미정";
-
-    if (!name) return;
 
     // Normalize group name (match Code.gs logic)
     const normalizedGroup = rawGroup.replace('/', ',');

@@ -252,3 +252,26 @@ export async function getScriptureData() {
     return [];
   }
 }
+
+/**
+ * Fetch announcements from Notice sheet
+ * Expected columns: A:Title, B:Content, C:Author, D:Date/Time
+ */
+export async function getNoticeData() {
+  try {
+    const rows = await getSheetValues("Notice!A2:E50");
+    if (!rows || rows.length === 0) return [];
+    
+    return rows.map((row, i) => ({
+      id: i,
+      title: row[0] || "",
+      content: row[1] || "",
+      author: row[2] || "운영팀",
+      time: row[3] || "",
+      type: row[4] || "general" // e.g., 'event', 'urgent'
+    }));
+  } catch (error) {
+    console.warn("[WARN] Failed to fetch NoticeData, returning empty list.");
+    return [];
+  }
+}
