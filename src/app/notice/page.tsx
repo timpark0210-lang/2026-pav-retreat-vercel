@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { getNoticeData } from "@/lib/google-sheets";
 import { Megaphone, Calendar, FileText, ExternalLink, Bell, Info, AlertCircle, ClipboardCheck, ChevronRight } from "lucide-react";
+import NoticeWriteButton from "@/components/notice/NoticeWriteButton";
 
 export const metadata: Metadata = {
   title: "Notice | PAV 2026",
@@ -68,6 +69,9 @@ export default async function NoticePage() {
           </div>
         )}
       </div>
+
+      {/* Admin Write Action */}
+      <NoticeWriteButton />
     </div>
   );
 }
